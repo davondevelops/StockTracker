@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare to Vault</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    {%load static %}
+    <link rel="stylesheet" href="{% static 'stockTrakerForm.css' %}">
+</head>
+<body>
+    <div id='wrapper'>
+        <a href="/homepage" style="text-align: end;">Home</a>
+        <div class= 'navbar'>
+            <div><a href="/stocktrackerform"><button>Perfomance Tracker</button></a></div>
+            <div><a href="/addtovault"><button>Add Stock to Vault </button></a></div>
+            <div><a href="/comparetovault"><button>Compare Stock to Vault</button></a></div>
+            <div><a href="/performance"><button>Performance</button></a></div>
+        </div>
+        <h1 style="text-align: center;">Performance Tracker</h1>
+        <p style="text-align: center;">Enter your trades here</p>
+        <form action="comparetovault/submit" method="post">
+            {%csrf_token%}
+            <label for="stock_ticker">Stock</label>
+            <input type="text" name="stock_ticker" maxlength="5">
+            <label for="catalyst">Catalyst</label>
+            <input type="text" name="catalyst">
+            <label for="desc">Sector: </label>
+            <input type="text" name="sector" id="">
+            <button type="submit" style="background-color:blue; color:white; width:50px; align-self:center;">Add</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HomePage</title>
+    {%load static%}
+    <link rel="stylesheet" href="{% static 'homepage.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+</head>
+<body>
+    <div id='wrapper'>
+        <div id ='welcome_bar'>
+            <p>Welcome {{loggedin.first_name}} {{loggedin.last_name}}</p>
+            <div style="display: inline-flex;"><p><div id="currentTime">{{Current_date}}  </div><p> | </p><a href="/logout">Logout</a></p></div>
+            
+        </div>
+        <div class= 'navbar'>
+            <div><a href=""><button>Scanner</button></a></div>
+            <div><a href=""><button>News</button></a></div>
+            <div><a href=""><button>Stats</button></a></div>
+            <div><a href=""><button>Performance</button></a></div>
+            <form action="" >
+                <input type="text" placeholder="Enter Ticker Here">
+            </form>
+        </div>
+        <div id =main>
+            <div class = 'box'>Top Gainers</div>
+            <div class = 'box'>
+                <h4 style="color:red;">Custom Watchlist</h4>
+                <select name="watchlist" id="watchlist_sel" value="Current Watchlist">
+                    <option value="1">First Watchlist</option>
+                    <option value="new">+Add New Watchlist</option>
+                </select>
+                <table class="table table-striped">
+                    <tr>
+                        <th>Stock</th>
+                        <th>Price</th>
+                        <th>Volume</th>
+                        <th>Day Gain%</th>
+                        <th>Float</th>
+                        <th>News?</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="stockname" id="addTtockToWatchlist" maxlength=6 style="width:50px" placeholder="+Add"></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <div class = 'box'><h4 style="color:red;">News</h4></div>
+            <div class = 'box'>
+                <h4 style="color:red;">Statistics</h4>
+                <a href="/stocktrackerform"><button>+Add Stock</button></a>
+
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function updateTime(){
+        myDiv = document.getElementById("currentTime");
+        myDiv.innerHTML = `${new Date().toLocaleString()}`
+    }
+
+    var t = setInterval(updateTime, 1000);
+</script>
+</html>

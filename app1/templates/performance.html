@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance</title>
+    {%load static%}
+    <link rel="stylesheet" href="{% static 'stockTrakerForm.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+</head>
+<body>
+    <div id=wrapper>
+        <a href="/homepage" style="text-align: end;">Home</a>
+        <div class= 'navbar'>
+            <div><a href="/stocktrackerform"><button>Perfomance Tracker</button></a></div>
+            <div><a href="/addtovault"><button>Add Stock to Vault </button></a></div>
+            <div><a href="/comparetovault"><button>Compare Stock to Vault</button></a></div>
+            <div><a href="/performance"><button>Performance</button></a></div>
+        </div>
+        <div id=main>
+            <div class=box>Here's what you are good at</div>
+            <div class=box>Here's what you're not so good at</div>
+            <div class=box>Overall</div>
+            <div class=box>Performance Chart</div>
+        </div>
+    </div>
+</body>
+</html>

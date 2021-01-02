@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Tracker</title>
+    {%load static%}
+    <link rel="stylesheet" href="{% static 'stockTrakerForm.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+</head>
+<body>
+    <div id='wrapper'>
+        <a href="/homepage" style="text-align: end;">Home</a>
+        <div class= 'navbar'>
+            <div><a href="/stocktrackerform"><button>Perfomance Tracker</button></a></div>
+            <div><a href="/addtovault"><button>Add Stock to Vault </button></a></div>
+            <div><a href="/comparetovault"><button>Compare Stock to Vault</button></a></div>
+            <div><a href="/performance"><button>Performance</button></a></div>
+        </div>
+        <h1 style="text-align: center;">Performance Tracker</h1>
+        <p style="text-align: center;">Enter your trades here</p>
+        <form action="" method="post">
+            {%csrf_token%}
+            <label for="stock_ticker">Stock</label>
+            <input type="text" name="stock_ticker" maxlength="5">
+            <label for="trade_type">Type of Trade</label>
+            <select name="trade_type" id="">
+                <option value="buy">Buy</option>
+                <option value="short">Short</option>
+            </select>
+            <label for="entry">Avg. Entry</label>
+            <input type="number" name="entry">
+            <label for="entry">Avg. Exit</label>
+            <input type="number" name="exit">
+            <label for="position_size">Position Size</label>
+            <input type="number" name="position_size">
+            <label for="pattern">Pattern</label>
+            <input type="text" name="pattern" maxlength="55">
+            <label for="date">Date of Trade</label>
+            <input type="date" name="date">
+            <label for="desc">Sector: </label>
+            <input type="text" name="sector" id="">
+            <label for="desc">Comment: </label>
+            <textarea name='desc' id='desc' cols="30" rows='5'></textarea>
+            <button type="submit">Add</button>
+        </form>
+    </div>
+</body>
+</html>
