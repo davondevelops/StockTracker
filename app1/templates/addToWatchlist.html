@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    {%load static%}
+    <link rel="stylesheet" href="{% static 'css/watchlist.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+
+
+<body>
+    <div id =wrapper>
+        <div class= 'navbar navbar-dark bg-primary'>
+            <div><a href="/homepage"><button>Home</button></a></div>
+            <div><a href=""><button>News</button></a></div>
+            <div><a href="/stocktrackerform"><button>Stats</button></a></div>
+            <div><a href="/performance"><button>Performance</button></a></div>
+            <form action="/displayStock" >
+                <input type="text" name="stock_ticker" placeholder="Enter Ticker Here">
+                <button type="submit">GO</button>
+            </form>
+        </div>
+        <!-- Shows the newest Watchlist with a way to make a new watchlist -->
+        <div style="display: flex;">
+            <h1 style="justify-self: center;">Watchlist</h1>
+        </div>
+        <div>
+            <select id="watchlist_selector" value="{{watchlist.id}}">
+                {%for watchlist in watchlists%}
+                    <option id="value" value="{{watchlist.id}}">{{watchlist.name}}</option>
+                {%endfor%}
+            </select>
+        </div>
+        <div id="changeThis">
+            <h4>Date: {{watchlist.created_at}} </h4>
+            <a href="/watchlist/{{watchlist.id}}/edit"><button class="btn btn-warning">Edit</button></a>
+            <!-- Some loop to go through all the categories -->
+            <h4>Category Name: {{watchlist.name}} </h4>
+            <!-- Some logic to print each stock and description within the category-->
+            {%for stock in watchlist.stocks.all%}
+                <div class="container border border-dark">
+                    <form class="seeChart" action="/displayStock">
+                        <h5>{{stock.ticker}}</h5>
+                        <input type="hidden" name="stock_ticker" value="{{trade.fields.ticker}}"/>
+                        <button type="submit" class="btn btn-success">See Chart</button>
+                    </form>
+                    <p> Notes: {{stock.desc}} </p>
+                    <p>Category: {{stock.category}} </p>
+                    <p>Catalyst: {{stock.catalyst}} </p>
+                    <a href="/watchlist/{{watchlist.id}}/stock/{{stock.id}}/delete"><button class="btn btn-danger">Delete</button></a>
+                </div>
+            {%endfor%}
+
+
+            <!-- At the end put forum here to add to current Watchlist -->
+            <form class="form-group col-8 mx-auto" action="/watchlist/{{watchlist.id}}/add/stock" method="POST">
+                {%csrf_token%}
+                <label for="ticker">Stock</label>
+                <input class="form-control" name="ticker" type="text" maxlength="6">
+                <label for="category">Category</label>
+                <input class="form-control" name="category" type="text">
+                <label for="category">Catalyst</label>
+                <input class="form-control" name="catalyst" type="text">
+                <label for="desc">Description: </label>
+                <textarea class="form-control" name='desc' id='desc' cols="30" rows='5'></textarea>
+                <button type="submit">Add</button>
+            </form>
+        </div>
+
+    </div>
+</body>
+<script>
+
+    
+        var myDiv = document.getElementById("watchlist_selector")
+        
+        $(myDiv).on("change", function(){
+            var x =myDiv.value;
+            $("#changeThis").load( `/watchlist/${x}` );
+        })
+    
+
+</script>
+</html>

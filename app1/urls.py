@@ -12,7 +12,23 @@ urlpatterns = [
     path('stocktrackerform', views.addStockStats),
     path('addtovault', views.addtoVault),
     path('comparetovault', views.comparetoVault),
-    path('performance', views.performance)
-    
-
+    path('performance', views.performance),
+    path('addtovault/submit', views.submitToVault),
+    path('addToHistory', views.addToHistory),
+    path('displayStock/',views.displayStock),
+    path('addtovault/intraday/submit/:stock', views.AddVaultIntraday),
+    path('addtovault/daily/submit/:stock', views.AddVaultDaily),
+    path('dayrecap/<str:date>', views.dayrecap),
+    path('trade/<int:y>/edit', views.editTrade),
+    path('trade/<int:z>/update', views.updateTrade),
+    path('trade/<int:z>/delete',views.deleteTrade),
+    path('watchlists',views.watchlist),
+    path('watchlist/add',views.newWatchlist),
+    path('watchlist/<int:y>/add', views.addToWatchlist),
+    path('watchlist/<int:z>/add/stock', views.addStockToWatchlist),
+    path('watchlist/new', views.addWatchlist),
+    path('watchlist/<int:y>', views.viewWatchlist),
+    path('watchlist/<int:x>/stock/<int:y>/delete', views.deleteStockFromWatchlist),
+    path('watchlist/<int:y>/edit', views.editWatchlist),
+    path('watchlist/<int:z>/update', views.updateWatchlist),
 ]

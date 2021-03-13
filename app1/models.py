@@ -1,5 +1,6 @@
 from django.db import models
-from datetime import date
+from datetime import date,timedelta, datetime
+from django.contrib.postgres.fields import ArrayField
 import re
 
 from django.db.models.fields import CharField
@@ -77,34 +78,75 @@ class User(models.Model):
     objects= UserManager()
     def __str__(self):
         return f"<User object: {self.first_name} ({self.id})>"
-    
-    
-class Stock(models.Model):
-    ticker=models.CharField(max_length=5)
-    
+
 class Watchlist(models.Model):
     name=models.CharField(max_length=55)
     user= models.ForeignKey(User, related_name="watchlist", on_delete= models.CASCADE)
-    
+    date= models.CharField(max_length=20, null=True)
     created_at= models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+class StockWatchlist(models.Model):
+    ticker=models.CharField(max_length=5)
+    desc=models.TextField()
+    watchlist= models.ForeignKey(Watchlist, related_name="stocks", on_delete= models.CASCADE)
+    category= models.CharField(max_length=20)
+    catalyst=models.CharField(max_length=45)
+    created_at=models.DateTimeField(auto_now_add=True)
+
+
+class stockVaultManager(models.Manager):
+    def addToVault(self, postData):
+        errors={}
+        if postData['stock_ticker']=='' :
+            errors['stock_ticker']= "Well you need a stock!"
+        return errors
+class StockHistoryManager(models.Manager):
+    def validateForm(self,postData):
+        errors={}
+        if postData['entry']=='':
+            errors['entry']='Please insert a value for entry'
+        if postData['exit']=='':
+            errors['exit']='Please insert a value for exit'
+        if postData['position_size']=='':
+            errors['position_size']='Please insert a value for position size'
+        if postData['pattern']=='':
+            errors['pattern']='Please insert the pattern type. Insert None if N/A'
+        if postData['date']=='':
+            errors['date']='Please insert a date'
+        # elif postData['date']>datetime.today():
+        #     errors['date']="You can't trade in the future"
+        if postData['sector']=='':
+            errors['sector']='Please insert the sector'
+        return errors
+
 
 
 class StockHistory(models.Model):
     ticker= models.CharField(max_length=5)
-    entry=models.DecimalField(decimal_places=2, max_digits=7)
-    exit=models.DecimalField(decimal_places=2, max_digits=7)
+    entry=models.DecimalField(decimal_places=3, max_digits=7)
+    exit=models.DecimalField(decimal_places=3, max_digits=7)
     position_size=models.DecimalField(decimal_places=2, max_digits=7)
-    is_buy=models.BooleanField()
+    buy_or_short=models.CharField(max_length=5)
     trade_pattern=models.CharField(max_length=55)
     sector=models.CharField(max_length=55)
     dateOfTrade=models.DateField()
-    desc= models.TextField()
+    desc= models.TextField(null=True)
     created_at= models.DateTimeField(auto_now_add=True)
+    objects=StockHistoryManager()
+    user= models.ForeignKey(User, related_name="stockHistory", on_delete= models.CASCADE)
+    created_at= models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 class vault(models.Model):
+    user= models.ForeignKey(User, related_name="uservault", on_delete= models.CASCADE)
+    created_at= models.DateTimeField(auto_now_add=True)
+
+class stockVault(models.Model):
+    vault= models.ForeignKey(vault, related_name="stockVault", on_delete= models.CASCADE, default=0)
     ticker= models.CharField(max_length=5)
     sector=models.CharField(max_length=55)
+    industry=models.CharField(max_length=100)
     open=models.DecimalField(decimal_places=2,max_digits=7)
     high=models.DecimalField(decimal_places=2,max_digits=7)
     low=models.DecimalField(decimal_places=2,max_digits=7)
@@ -112,10 +154,17 @@ class vault(models.Model):
     previous_close=models.DecimalField(decimal_places=2,max_digits=7)
     volume=models.IntegerField()
     float=models.IntegerField()
-    catalyst=models.CharField(max_length=55)
-    lookupdate=models.DateField()
+    exchange=models.CharField(max_length=25)
+    pattern=models.CharField(max_length=55, default='None')
     year_high=models.DecimalField(decimal_places=2,max_digits=7)
     year_low=models.DecimalField(decimal_places=2,max_digits=7)
     market_cap=models.DecimalField(decimal_places=2,max_digits=20)
+    daychart=ArrayField(ArrayField(models.DecimalField(decimal_places=2,max_digits=20)))
+    type=CharField(max_length=10, default=[])
     created_at= models.DateTimeField(auto_now_add=True)
+    objects=stockVaultManager()
+    
+        
+    
+    
     

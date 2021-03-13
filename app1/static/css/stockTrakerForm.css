@@ -1,14 +1,28 @@
 #wrapper{
     width: 960px;
+    background-color: #167e56;
     margin: 0px auto;
-    background-color:whitesmoke;
-    padding: 20px;
+    color: white;
 }
-#main{
+body{
+    background-color: grey;
+}
+form{
+    display:flex;
+    flex-direction: column;
+    padding: 20px;
+
+}
+.navbar{
+    background-color:black;
+    padding: 10px;
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-around;
     margin: 20px;
+}
+.navbar a button{
+    background-color: #167e56;
+    color: white;
 }
 .box{
     width: 400px;
@@ -18,17 +32,7 @@
     text-align: center;
     flex-direction: column;
 }
-.navbar{
-    background-color: darkgray;
-    padding: 10px;
-    display: flex;
-    justify-content: space-around;
-}
-#welcome_bar{
+#main{
     display:flex;
-    justify-content: space-between;
-}
-.navbar a button{
-    background-color: blue;
-    color: white;
+    flex-wrap:wrap;
 }

@@ -1,0 +1,51 @@
+#wrapper{
+    width: 960px;
+    margin: 0px auto;
+    background-color:whitesmoke;
+    padding: 20px;
+}
+#main{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    margin: 20px;
+    padding:5px;
+}
+#info{
+    display: flex;
+    margin-left: 5px;
+    flex-direction: column;
+}
+.box{
+    width: 250px;
+    height: 340px;
+    margin:10px;
+    border: 1px solid black;
+}
+#info .box h2{
+    text-align:center;
+    color:black;
+}
+
+.navbar{
+    background-color: #222227;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+}
+#welcome_bar{
+    display:flex;
+    justify-content: space-between;
+}
+.navbar a button{
+    background-color: #167e56;
+    color: white;
+}
+
+.seeChart{
+    display: inline-flex;
+}
+
+.seeChart button{
+    margin-left: 5px;
+}

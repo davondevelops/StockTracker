@@ -19,31 +19,32 @@
             <div><a href="/performance"><button>Performance</button></a></div>
         </div>
         <h1 style="text-align: center;">Performance Tracker</h1>
-        <p style="text-align: center;">Enter your trades here</p>
-        <form action="addToHistory" method="post">
+        <p style="text-align: center;">Edit your trade here</p>
+        <form action="/trade/{{id}}/update" method="post">
             {%csrf_token%}
+            
             <label for="stock_ticker">Stock</label>
-            <input type="text" name="stock_ticker" maxlength="5">
+            <input type="text" name="stock_ticker" maxlength="5" value="{{trade.fields.ticker}}">
             <label for="trade_type">Type of Trade</label>
-            <select name="trade_type" id="">
+            <select name="trade_type" id="" value ="{{trade.fields.buy_or_short}}">
                 <option value="buy">Buy</option>
                 <option value="short">Short</option>
             </select>
             <label for="entry">Avg. Entry</label>
-            <input type="number" name="entry" step=.001>
+            <input type="number" name="entry" value ="{{trade.fields.entry}}" step=.0001>
             <label for="entry">Avg. Exit</label>
-            <input type="number" name="exit" step=.001>
+            <input type="number" name="exit" value ="{{trade.fields.exit}}" step=.0001>
             <label for="position_size">Position Size</label>
-            <input type="number" name="position_size">
+            <input type="number" name="position_size" value ="{{trade.fields.position_size}}">
             <label for="pattern">Pattern</label>
-            <input type="text" name="pattern" maxlength="55">
+            <input type="text" name="pattern" maxlength="55" value ="{{trade.fields.trade_pattern}}">
             <label for="date">Date of Trade</label>
-            <input type="date" name="date">
+            <input type="date" name="date" value ="{{trade.fields.dateOfTrade}}">
             <label for="Sector">Sector: </label>
-            <input type="text" name="sector" id="">
+            <input type="text" name="sector" id="" value ="{{trade.fields.sector}}">
             <label for="desc">Comment: </label>
-            <textarea name='desc' id='desc' cols="30" rows='5'></textarea>
-            <button type="submit">Add</button>
+            <textarea name='desc' id='desc' cols="30" rows='5' >{{trade.fields.desc}}</textarea>
+            <button type="submit">Edit</button>
         </form>
     </div>
 </body>

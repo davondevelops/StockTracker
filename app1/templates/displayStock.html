@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{overview.Symbol}} Info</title>
+    {%load static%}
+    <link rel="stylesheet" href="{% static 'css/displayStock.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts" type="text/javascript"></script>
+
+</head>
+
+<body>
+    <div id=wrapper>
+        <a href="/homepage"><button>Home</button></a>
+        <h3>{{overview.Symbol}}</h3>
+        <p>{{overview.Name}}</p>
+        <p>{{overview.Address}}</p>
+        <div id='chart'>
+
+        </div>
+        <table class='table-bordered'>
+            <tr>
+                <td>Ticker</td>
+                <td>{{overview.Symbol}}</td>
+                <td>Exchange</td>
+                <td>{{overview.Exchange}}</td>
+                <td>Market Cap</td>
+                <td id="market_cap">${{overview.MarketCapitalization}}</td>
+                <td>Employees</td>
+                <td>{{overview.FullTimeEmployees}}</td>
+            </tr>
+            <tr>
+                <td>Shares Outstanding</td>
+                <td id="shares_outstanding">{{overview.SharesOutstanding}}</td>
+                <td>Float</td>
+                <td id=float>{{overview.SharesFloat}}</td>
+                <td>Sector</td>
+                <td>{{overview.Sector}}</td>
+                <td>Industry</td>
+                <td>{{overview.Industry}}</td>
+            </tr>
+            <tr>
+                <td>Open</td>
+                <td id=open></td>
+                <td>Close</td>
+                <td id=close></td>
+                <td>Volume</td>
+                <td id=volume></td>
+                <td>% Change</td>
+                <td id=change></td>
+            </tr>
+            <tr>
+                <td>52-week low</td>
+                <td>${{overview.52WeekLow}}</td>
+                <td>52-week high</td>
+                <td>${{overview.52WeekHigh}}</td>
+            </tr>
+        </table>
+        {{ overview|json_script:"overview-data" }}
+        <a href="/addtovault/intraday/submit"><button class= "btn btn-primary">Add Intraday Chart to Vault</button></a>
+        <a href="/addtovault/daily/submit"><button class= "btn btn-success">Add Daily Chart to Vault</button></a>
+    </div>
+</body>
+<script type="text/javascript">
+    var requestOptions = {
+        method: 'GET',
+        redirect: 'follow'
+    };
+
+    let x = fetch("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={{stock}}&apikey=5S4RAQTJCLF5PUM4", requestOptions)
+        .then(x => x.json())
+        .then(result => buildChart(result))
+    function buildChart(x) {
+        let dates = Object.keys(x["Time Series (Daily)"])
+        //let dates = Object.keys(x["Time Series (Daily)"])
+        let dateArray = [];
+        let volume=[];
+        dates.forEach((e) => {
+
+            dateArray.unshift(
+                {
+                    x: e,
+                    y: [x["Time Series (Daily)"][e]['1. open'], x["Time Series (Daily)"][e]['2. high'], x["Time Series (Daily)"][e]['3. low'], x["Time Series (Daily)"][e]['4. close']]
+                })
+                volume.unshift(
+                    {
+                        x: e,
+                        y:x["Time Series (Daily)"][e]['5. volume']
+                    }
+                    
+                )
+
+        });
+        var options = {
+            chart: {
+                type: 'candlestick'
+            },
+            series: [{
+                data: dateArray
+            }]
+        }
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+        chart.render();
+        
+        let latestOpen = dateArray[99].y[0]
+        myDiv = document.getElementById("open");
+        myDiv.innerHTML = `$${latestOpen}`
+        
+        let latestClose = dateArray[99].y[3]
+        myDiv = document.getElementById("close");
+        myDiv.innerHTML = `$${latestClose}`
+        
+        let prevClose = dateArray[98].y[3]
+        let perChange = ((latestClose-prevClose)/prevClose)*100
+        myDiv = document.getElementById("change");
+        myDiv.innerHTML = `${perChange.toFixed(2)}%`
+        
+        let dayVolume= volume[99].y
+        let subsVolume=findSubScript(dayVolume)
+        myDiv = document.getElementById("volume");
+        myDiv.innerHTML=`${(subsVolume.v).toFixed(2)}${subsVolume.s}`
+        var overview = JSON.parse(document.getElementById('overview-data').textContent);
+        console.log(overview)
+        let float=findSubScript( overview.SharesFloat)
+        myDiv = document.getElementById("float");
+        myDiv.innerHTML=`${(float.v).toFixed(2)}${float.s}`
+
+        let shares_outstanding= findSubScript(overview.SharesOutstanding)
+        let market_cap= findSubScript(overview.MarketCapitalization)
+        myDiv = document.getElementById("market_cap");
+        myDiv.innerHTML=`${(market_cap.v).toFixed(2)}${market_cap.s}`
+        myDiv = document.getElementById("shares_outstanding");
+        myDiv.innerHTML=`${(shares_outstanding.v).toFixed(2)}${shares_outstanding.s}`
+    }
+    
+
+    function findSubScript(v){
+        let i=0
+        for(let x=v; x>=1;i++){
+            x=x/10;
+        }
+        x=v
+        if (i<7)
+            return {"v":x, "s":""}
+        else if(i<10)
+            return{ "v":x/1000000, "s":"M"}
+        else if(i<13)
+            return{ "v":x/1000000000, "s":"B"}
+        else
+            return{"v":x/1000000000000, "s":"T"}
+    }
+
+
+
+</script>
+
+</html>

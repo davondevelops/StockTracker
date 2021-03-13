@@ -64,8 +64,12 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+            'custom_tags':'app1.template_tags.custom_tags'
+            }
         },
-    },
+        },
+            
 ]
 
 WSGI_APPLICATION = 'StockTracker.wsgi.application'
@@ -76,8 +80,12 @@ WSGI_APPLICATION = 'StockTracker.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME':'StockTracker',
+        'USER':'postgres',
+        'PASSWORD':'Marquell1996',
+        'HOST':'127.0.0.1',
+        'PORT':'5432',
     }
 }
 

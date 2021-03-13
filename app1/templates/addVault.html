@@ -6,7 +6,7 @@
     <title>Add to Vault</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     {%load static %}
-    <link rel="stylesheet" href="{% static 'stockTrakerForm.css' %}">
+    <link rel="stylesheet" href="{% static 'css/stockTrakerForm.css' %}">
 </head>
 <body>
     <div id='wrapper'>
@@ -17,18 +17,14 @@
             <div><a href="/comparetovault"><button>Compare Stock to Vault</button></a></div>
             <div><a href="/performance"><button>Performance</button></a></div>
         </div>
-        <h1 style="text-align: center;">Performance Tracker</h1>
-        <p style="text-align: center;">Enter your trades here</p>
+        <h1 style="text-align: center;">Add Stock to Your Vault</h1>
+        <p style="text-align: center;">What Stock would you like to add to your vault?</p>
         <form action="addtovault/submit" method="post">
             {%csrf_token%}
             <label for="stock_ticker">Stock</label>
             <input type="text" name="stock_ticker" maxlength="5">
-            <label for="catalyst">Catalyst</label>
-            <input type="text" name="catalyst">
-            <label for="date">Date</label>
-            <input type="date" name="date">
-            <label for="desc">Sector: </label>
-            <input type="text" name="sector" id="">
+            <label for="pattern">Pattern</label>
+            <input type="text" name="pattern">
             <button type="submit" style="background-color:blue; color:white; width:50px; align-self:center;">Add</button>
         </form>
     </div>

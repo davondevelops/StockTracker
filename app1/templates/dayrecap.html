@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Days Recap</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    {%load static%}
+    <link rel="stylesheet" href="{% static 'css/watchlist.css' %}">
+</head>
+<body >
+    <div id="wrapper">
+        <a href="/homepage" style="align-self: end;"><button>Home</button></a>
+        <h1 style="text-align: center;">Day's Recap for {{date}}</h1>
+        {%for trade in daysHist%}
+            <div class="container border border-dark">
+                <form action="/displayStock">
+                    <h2>{{trade.fields.ticker}}</h2>
+                    <input type="hidden" name="stock_ticker" value="{{trade.fields.ticker}}"/>
+                    <button type="submit" class="btn btn-success">See Chart</button>
+                </form>
+                {%if trade.fields.buy_or_short == "buy"%}
+                    {%if trade.fields.exit > trade.fields.entry%}
+                        <h3 class="text-success">Winner</h3>
+                    {%else%}
+                        <h3 class="text-danger">Loser</h3>
+                    {%endif%}
+                {%else%}
+                    {%if trade.fields.exit < trade.entry%}
+                        <h3 class="text-success">Winner</h3>
+                    {%else%}
+                        <h3 class="text-danger">Loser</h3>
+                    {%endif%}
+                {%endif%}
+                <p>Exit: {{trade.fields.exit}}</p>
+                <p>Entry: {{trade.fields.entry}}</p>
+                <p>Position Size: {{trade.fields.position_size}}</p>
+                <p>Type of Trade: {{trade.fields.buy_or_short}}</p>
+                <p>Notes: {{trade.fields.desc}}</p>
+                <p><a href="/trade/{{trade.pk}}/edit"><button class="btn btn-warning">Edit</button></a><a href="/trade/{{trade.pk}}/delete"><button class="btn btn-danger">Delete</button></a></p>
+            </div>
+        {%endfor%}
+        {%if watchlist.name != undefined%}
+            <h3>Today's Watchlist</h3>
+            <a href="/watchlist/{{watchlist.id}}/add">{{watchlist.name}}</a>
+        {%else%}
+            <form class="form-group" action="/watchlist/new" method="POST">
+                {%csrf_token%}
+                <input type="hidden" name ="date" value="{{date}}">
+                <h3 class="mx-auto">New Watchlist?</h3>
+                <label for="name">Name</label>
+                <input type="text" name="name" class="form-control">
+                <button type="submit">Add</button>
+            </form>
+        {%endif%}
+    </div>
+</body>
+</html>

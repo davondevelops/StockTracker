@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    {%load static%}
+    <link rel="stylesheet" href="{% static 'css/watchlist.css' %}">
+</head>
+<body>
+    <div id='wrapper'>
+        
+        <div id ='welcome_bar'>
+            <div style="display: inline-flex;"><p><div id="currentTime">  </div><p> | </p><a href="/logout">Logout</a></p></div>
+            
+        </div>
+        <div class= 'navbar navbar-dark bg-primary'>
+            <div><a href="/homepage"><button>Home</button></a></div>
+            <div><a href=""><button>News</button></a></div>
+            <div><a href="/stocktrackerform"><button>Stats</button></a></div>
+            <div><a href="/performance"><button>Performance</button></a></div>
+            <form action="/displayStock" >
+                <input type="text" name="stock_ticker" placeholder="Enter Ticker Here">
+                <button type="submit">GO</button>
+            </form>
+        </div>
+        <br>
+        <form class="form-group" action="/watchlist/new" method="POST">
+            {%csrf_token%}
+            <p>New Watclist</p>
+            <label for="name">Name</label>
+            <input type="text" name="name" class="form-control">
+            <label for="date">Date(YYYY-MM-DD)</label>
+            <input type="text" name="date" class="form-control"> 
+            <button type="submit">Add</button>
+        </form>
+</body>
+</body>
+</html>
