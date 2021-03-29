@@ -14,6 +14,7 @@ from django.core import serializers
 from django.core.serializers import serialize
 from django.core.serializers.json import DjangoJSONEncoder
 import json
+from decouple import config
 # Create your views here.
 
 
@@ -161,23 +162,26 @@ def displayStock(request):
 
 def AddVaultIntraday(request, stock):
     stockInfo=PullStockInfo(stock);
+    password=config('Twelve_Data')
     y=stock
-    quote=requests.request("GET",f"https://api.twelvedata.com/quote?apikey=9532a76d75604debb48a2949d036f7f3&symbol={stock}").json
+    quote=requests.request("GET",f"https://api.twelvedata.com/quote?apikey={password}&symbol={stock}").json
     dayChart=getIntradayChart(stock)
     stockVault.object.create(ticker=stockInfo['symbol'],sector=stockInfo['sector'], industry=stockInfo['industry'], exchange=stockInfo['exchange'], open=quote[y]['open'], high=quote[y]['high'], low=quote[y]['low'], close=quote[y]['close'], previous_close=quote[y]['previous_close'], volume=quote[y]['volume'], year_high=stockInfo['52WeekHigh'],year_low=stockInfo['52WeekLow'],float=stockInfo['SharesFloat'], market_cap=stockInfo['SharesOutstanding'], daychart=dayChart)
 
 
 def AddVaultDaily(request, stock):
     stockInfo=PullStockInfo(stock);
+    password=config('Twelve_Data')
     y=stock
-    quote=requests.request("GET",f"https://api.twelvedata.com/quote?apikey=9532a76d75604debb48a2949d036f7f3&symbol={stock}").json
+    quote=requests.request("GET",f"https://api.twelvedata.com/quote?apikey={password}&symbol={stock}").json
     dayChart=getDailyChart(stock)
     stockVault.object.create(ticker=stockInfo['symbol'],sector=stockInfo['sector'], industry=stockInfo['industry'], exchange=stockInfo['exchange'], open=quote[y]['open'], high=quote[y]['high'], low=quote[y]['low'], close=quote[y]['close'], previous_close=quote[y]['previous_close'], volume=quote[y]['volume'], year_high=stockInfo['52WeekHigh'],year_low=stockInfo['52WeekLow'],float=stockInfo['SharesFloat'], market_cap=stockInfo['SharesOutstanding'],daychart=dayChart)
 
 
 
 def PullStockInfo(stock):
-    overview=requests.request("GET",f"https://www.alphavantage.co/query?symbol={stock}&apikey=5S4RAQTJCLF5PUM4&function=OVERVIEW")
+    password=config('Alpha')
+    overview=requests.request("GET",f"https://www.alphavantage.co/query?symbol={stock}&apikey={password}&function=OVERVIEW")
     context={
         "overview":overview.json()
     }
@@ -185,26 +189,22 @@ def PullStockInfo(stock):
 
 
 def PullStockQuote(stock):
-    quote=requests.request("GET",f"https://www.alphavantage.co/query?symbol={stock}&function=GLOBAL_QUOTE&apikey=HF0BKUCRXXU3SD5N")
+    password=config('Alpha')
+    quote=requests.request("GET",f"https://www.alphavantage.co/query?symbol={stock}&function=GLOBAL_QUOTE&apikey={password}")
     print(quote)
     return quote.json()
 
 
-def PullStockQuoteTwelve(stocks):
-    x= ""
-    for stock in stocks:
-        x+= stock
-    quote=requests.request("GET",f"https://api.twelvedata.com/quote?apikey=9532a76d75604debb48a2949d036f7f3&symbol={x}")
-    return quote.json()
-
 def getIntradayChart(stock):
-    result=requests.request('GET', f"https://api.twelvedata.com/time_series?apikey=9532a76d75604debb48a2949d036f7f3&interval=5min&outputsize=78&symbol={stock}")
+    password=config('Twelve_Data')
+    result=requests.request('GET', f"https://api.twelvedata.com/time_series?apikey={password}&interval=5min&outputsize=78&symbol={stock}")
     values=result['values']
     return values;
 
 
 def getDailyChart(stock):
-    result=requests.request('GET', f"https://api.twelvedata.com/time_series?apikey=9532a76d75604debb48a2949d036f7f3&interval=1day&outputsize=252&symbol={stock}")
+    password=config('Twelve_Data')
+    result=requests.request('GET', f"https://api.twelvedata.com/time_series?apikey={password}&interval=1day&outputsize=252&symbol={stock}")
     values=result['values']
     return values;
 
