@@ -150,14 +150,32 @@ def addToHistory(request):
 
 def displayStock(request):
     y=request.GET
-    stock=y['stock_ticker'] 
-    stockInfo=PullStockInfo(stock)
-    content={
-        "stock": stock,
-        "overview":stockInfo['overview'],
-    }
-    
-    return render(request, 'displayStock.html', content)
+    type=y['asset']
+    print(type)
+    if type=="stock":
+        
+        stock=y['stock_ticker'] 
+        stockInfo=PullStockInfo(stock)
+        password=config('Alpha')
+        content={
+            "stock": stock,
+            "overview":stockInfo['overview'],
+            "password": password
+        }
+        
+        return render(request, 'displayStock.html', content)
+    elif type == "crypto":
+        crypto=y['stock_ticker'] 
+        cryptoInfo=PullCryptoInfo(crypto)
+        cryptoChart=PullCryptoChart(crypto)
+        content={
+            "crypto": crypto,
+            "overview":cryptoInfo,
+            "chartData":cryptoChart
+        }
+        return render(request, 'displayCrypto.html', content)
+    else:
+        return redirect('/homepage')
 
 
 def AddVaultIntraday(request, stock):
@@ -177,7 +195,17 @@ def AddVaultDaily(request, stock):
     dayChart=getDailyChart(stock)
     stockVault.object.create(ticker=stockInfo['symbol'],sector=stockInfo['sector'], industry=stockInfo['industry'], exchange=stockInfo['exchange'], open=quote[y]['open'], high=quote[y]['high'], low=quote[y]['low'], close=quote[y]['close'], previous_close=quote[y]['previous_close'], volume=quote[y]['volume'], year_high=stockInfo['52WeekHigh'],year_low=stockInfo['52WeekLow'],float=stockInfo['SharesFloat'], market_cap=stockInfo['SharesOutstanding'],daychart=dayChart)
 
+def PullCryptoChart(name):
+    crypto=name+"usd"
+    quote= requests.request("GET",f"https://api.gemini.com/v2/candles/{crypto}/15m")
+    return quote.json()
 
+
+def PullCryptoInfo(name):
+    crypto=name+ "usd"
+    print(crypto)
+    quote=requests.request("GET",f"https://api.gemini.com/v2/ticker/{crypto}")
+    return quote.json()
 
 def PullStockInfo(stock):
     password=config('Alpha')
@@ -191,7 +219,6 @@ def PullStockInfo(stock):
 def PullStockQuote(stock):
     password=config('Alpha')
     quote=requests.request("GET",f"https://www.alphavantage.co/query?symbol={stock}&function=GLOBAL_QUOTE&apikey={password}")
-    print(quote)
     return quote.json()
 
 

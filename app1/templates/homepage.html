@@ -30,6 +30,10 @@
             <div><a href="/performance"><button>Performance</button></a></div>
             <form action="/displayStock">
                 <input type="text" name="stock_ticker" placeholder="Enter Ticker Here">
+                <input type="radio" id="stock" name="asset" value="stock">
+                <label for="stock">Stock</label>
+                <input type="radio" id="crypto" name="asset" value="crypto">
+                <label for="crypto">Crypto</label>
                 <button type="submit">GO</button>
             </form>
         </div>

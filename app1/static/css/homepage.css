@@ -203,3 +203,7 @@ body{
     text-decoration: none;
     color:white;
 }
+
+label {
+  color: white;
+}

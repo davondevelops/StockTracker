@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {%load static%}
+    <link rel="stylesheet" href="{% static 'css/displayStock.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts" type="text/javascript"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Crypto Info</title>
+</head>
+<body>
+    <div id=wrapper>
+        <a href="/homepage"><button>Home</button></a>
+        <h3>{{overview.symbol}}</h3>
+        <select name="timeframe" id="timeframe">
+            <option value="1m"> 1 minute</option>
+            <option value="5m"> 5 minute</option>
+            <option value="15m" selected> 15 minute</option>
+            <option value="30m"> 30 minute</option>
+            <option value="1hr"> 1 hour</option>
+            <option value="6h"> 1 hour</option>
+            <option value="1day"> 1 day</option>
+        </select>
+        <div id="chart">
+
+
+        </div>
+        {{chartData|json_script:"chartData"}}
+        {{overview|json_script:"overview-data"}}
+    </div>
+</body>
+<script type="text/javascript">
+    let timeframe = '15m';
+    createChart(timeframe)
+    
+    //Reload chart with different candlestick times dependent on what the user wants
+    $("#timeframe").change(function(){
+        var str = "";
+        $( "select option:selected" ).each(function() {
+            str += $( this ).val();
+            createChart(str)
+        });
+    }).change();
+    
+    
+    function createChart(timeframe){
+        var overview = JSON.parse(document.getElementById('overview-data').textContent);
+        var name= overview.symbol
+        
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+        
+        let x=fetch("https://api.gemini.com/v2/candles/"+name+"/"+timeframe, requestOptions)
+        .then(x=> x.json())
+        .then(result=> buildChart(result))
+        function buildChart(x){
+        
+            let chartData= []
+            let volume=[]
+            x.forEach((e)=>{
+                let d=new Date(e[0])
+
+                chartData.unshift({
+                    x: d.toDateString()+" "+ d.toLocaleTimeString(),
+                    y: [e[1],e[2],e[3],e[4]]
+                })
+                
+                volume.unshift(
+                    e[5]
+                    )
+            });
+            var options = {
+                chart: {
+                    type: 'candlestick'
+                },
+                series: [{
+                    data: chartData
+                }]
+            }
+            $("#chart").empty();
+            var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+            chart.render();
+        }
+    }
+
+    
+</script>
+</html>

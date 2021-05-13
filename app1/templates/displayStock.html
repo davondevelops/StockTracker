@@ -61,8 +61,8 @@
             </tr>
         </table>
         {{ overview|json_script:"overview-data" }}
-        <a href="/addtovault/intraday/submit"><button class= "btn btn-primary">Add Intraday Chart to Vault</button></a>
-        <a href="/addtovault/daily/submit"><button class= "btn btn-success">Add Daily Chart to Vault</button></a>
+        <a href="/addtovault/intraday/submit"><button class="btn btn-primary">Add Intraday Chart to Vault</button></a>
+        <a href="/addtovault/daily/submit"><button class="btn btn-success">Add Daily Chart to Vault</button></a>
     </div>
 </body>
 <script type="text/javascript">
@@ -73,14 +73,14 @@
         redirect: 'follow'
     };
 
-    let x = fetch("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={{stock}}&apikey=5S4RAQTJCLF5PUM4", requestOptions)
+    let x = fetch("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={{stock}}&apikey={{password}}", requestOptions)
         .then(x => x.json())
         .then(result => buildChart(result))
+
     function buildChart(x) {
         let dates = Object.keys(x["Time Series (Daily)"])
-        //let dates = Object.keys(x["Time Series (Daily)"])
         let dateArray = [];
-        let volume=[];
+        let volume = [];
         dates.forEach((e) => {
 
             dateArray.unshift(
@@ -88,13 +88,13 @@
                     x: e,
                     y: [x["Time Series (Daily)"][e]['1. open'], x["Time Series (Daily)"][e]['2. high'], x["Time Series (Daily)"][e]['3. low'], x["Time Series (Daily)"][e]['4. close']]
                 })
-                volume.unshift(
-                    {
-                        x: e,
-                        y:x["Time Series (Daily)"][e]['5. volume']
-                    }
-                    
-                )
+            volume.unshift(
+                {
+                    x: e,
+                    y: x["Time Series (Daily)"][e]['5. volume']
+                }
+
+            )
 
         });
         var options = {
@@ -108,53 +108,59 @@
         var chart = new ApexCharts(document.querySelector("#chart"), options);
 
         chart.render();
-        
-        let latestOpen = dateArray[99].y[0]
-        myDiv = document.getElementById("open");
-        myDiv.innerHTML = `$${latestOpen}`
-        
-        let latestClose = dateArray[99].y[3]
-        myDiv = document.getElementById("close");
-        myDiv.innerHTML = `$${latestClose}`
-        
-        let prevClose = dateArray[98].y[3]
-        let perChange = ((latestClose-prevClose)/prevClose)*100
-        myDiv = document.getElementById("change");
-        myDiv.innerHTML = `${perChange.toFixed(2)}%`
-        
-        let dayVolume= volume[99].y
-        let subsVolume=findSubScript(dayVolume)
-        myDiv = document.getElementById("volume");
-        myDiv.innerHTML=`${(subsVolume.v).toFixed(2)}${subsVolume.s}`
-        var overview = JSON.parse(document.getElementById('overview-data').textContent);
-        console.log(overview)
-        let float=findSubScript( overview.SharesFloat)
-        myDiv = document.getElementById("float");
-        myDiv.innerHTML=`${(float.v).toFixed(2)}${float.s}`
 
-        let shares_outstanding= findSubScript(overview.SharesOutstanding)
-        let market_cap= findSubScript(overview.MarketCapitalization)
-        myDiv = document.getElementById("market_cap");
-        myDiv.innerHTML=`${(market_cap.v).toFixed(2)}${market_cap.s}`
-        myDiv = document.getElementById("shares_outstanding");
-        myDiv.innerHTML=`${(shares_outstanding.v).toFixed(2)}${shares_outstanding.s}`
+    //Addding visual pleasing numbers to rows
+    let latestOpen = dateArray[99].y[0]
+    myDiv = document.getElementById("open");
+    myDiv.innerHTML = `$${latestOpen}`
+
+    let latestClose = dateArray[99].y[3]
+    myDiv = document.getElementById("close");
+    myDiv.innerHTML = `$${latestClose}`
+
+    let prevClose = dateArray[98].y[3]
+    let perChange = ((latestClose - prevClose) / prevClose) * 100
+    myDiv = document.getElementById("change");
+    myDiv.innerHTML = `${perChange.toFixed(2)}%`
+
+    let dayVolume = volume[99].y
+    let subsVolume = findSubScript(dayVolume)
+    myDiv = document.getElementById("volume");
+    myDiv.innerHTML = `${(subsVolume.v).toFixed(2)}${subsVolume.s}`
     }
-    
 
-    function findSubScript(v){
-        let i=0
-        for(let x=v; x>=1;i++){
-            x=x/10;
+
+    
+    
+    var overview = JSON.parse(document.getElementById('overview-data').textContent);
+    
+    
+    console.log(overview)
+    let float = findSubScript(overview.SharesFloat)
+    myDiv = document.getElementById("float");
+    myDiv.innerHTML = `${(float.v).toFixed(2)}${float.s}`
+
+    let shares_outstanding = findSubScript(overview.SharesOutstanding)
+    let market_cap = findSubScript(overview.MarketCapitalization)
+    myDiv = document.getElementById("market_cap");
+    myDiv.innerHTML = `${(market_cap.v).toFixed(2)}${market_cap.s}`
+    myDiv = document.getElementById("shares_outstanding");
+    myDiv.innerHTML = `${(shares_outstanding.v).toFixed(2)}${shares_outstanding.s}`
+
+    function findSubScript(v) {
+        let i = 0
+        for (let x = v; x >= 1; i++) {
+            x = x / 10;
         }
-        x=v
-        if (i<7)
-            return {"v":x, "s":""}
-        else if(i<10)
-            return{ "v":x/1000000, "s":"M"}
-        else if(i<13)
-            return{ "v":x/1000000000, "s":"B"}
+        x = v
+        if (i < 7)
+            return { "v": x, "s": "" }
+        else if (i < 10)
+            return { "v": x / 1000000, "s": "M" }
+        else if (i < 13)
+            return { "v": x / 1000000000, "s": "B" }
         else
-            return{"v":x/1000000000000, "s":"T"}
+            return { "v": x / 1000000000000, "s": "T" }
     }
 
 

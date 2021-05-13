@@ -126,6 +126,7 @@ class StockHistory(models.Model):
     ticker= models.CharField(max_length=5)
     entry=models.DecimalField(decimal_places=3, max_digits=7)
     exit=models.DecimalField(decimal_places=3, max_digits=7)
+    fee=models.DecimalField(decimal_places=2, max_digits=7,default=0)
     position_size=models.DecimalField(decimal_places=2, max_digits=7)
     buy_or_short=models.CharField(max_length=5)
     trade_pattern=models.CharField(max_length=55)
